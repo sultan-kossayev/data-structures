@@ -1,6 +1,9 @@
 package datastructure.tree;
 
 import datastructure.DataStructure;
+import datastructure.tree.traversal.TreeTraversal;
+
+import java.util.Collection;
 
 /**
  * The interface of the Tree data structure
@@ -32,15 +35,38 @@ public interface Tree<T> extends DataStructure {
      * If an implementation allows duplicates then the first node that contains the value must be returned.
      *
      * @param value a value to find
-     * @return a reference to the node that contains the value
+     * @return a reference to the node that contains the value or null
      */
     Node<T> find(T value);
+
+    /**
+     * Returns the root of the tree.
+     *
+     * @return the root of the tree or null
+     */
+    Node<T> root();
+
+    /**
+     * Returns direct children of the given parent.
+     *
+     * @param parent a node children of which have to returned
+     * @return a collection of children or empty
+     */
+    Collection<Node<T>> childrenOf(Node<T> parent);
+
+    /**
+     * Returns the values that the tree contains.
+     * The ordering of the values depends on used traversal method.
+     *
+     * @return values that the tree contains
+     */
+    Collection<T> values(TreeTraversal traverseUsing);
 
     /**
      * The interface of a node tree
      */
     interface Node<T> {
 
-        T element();
+        T value();
     }
 }
