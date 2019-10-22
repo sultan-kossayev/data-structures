@@ -21,7 +21,7 @@ public class PostOrderTraversal<T> implements TreeTraversal<T> {
         return nodes;
     }
 
-    protected void postOrder(Collection<T> nodes, Tree<T> tree, Tree.Node<T> parent) {
+    private void postOrder(Collection<T> nodes, Tree<T> tree, Tree.Node<T> parent) {
         if (parent == null) {
             return;
         }
