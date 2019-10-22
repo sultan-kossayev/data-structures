@@ -23,42 +23,23 @@ public class BinarySearchTree<T extends Comparable> implements BinaryTree<T> {
 
     @Override
     public Node<T> leftOf(Node<T> parent) {
-        return null;
+        return wrap(parent).left;
     }
 
     @Override
     public Node<T> rightOf(Node<T> parent) {
-        return null;
+        return wrap(parent).right;
     }
 
     /**
-     * Duplicates aren't allowed
+     * Duplicates are not allowed.
+     * If the value exists already in the tree, the reference to its node will be returned.
      */
     @Override
     public Node<T> add(T value) {
-        LinkedNode added;
+        LinkedNode added = add(root, value);
         if (root == null) {
-            root = added = new LinkedNode(value, null, null, null);
-        } else {
-            LinkedNode parent = root;
-            LinkedNode curr = root;
-            while(curr != null) {
-                parent = curr;
-                if (value.compareTo(curr.value()) < 0) {
-                    curr = curr.left;
-                } else if (value.compareTo(curr.value()) > 0) {
-                    curr = curr.right;
-                } else {
-                    throw new IllegalArgumentException("The value already exists in the tree");
-                }
-            }
-
-            added = new LinkedNode(value, parent, null, null);
-            if (value.compareTo(parent.value()) < 0) {
-                parent.left = added;
-            } else {
-                parent.right = added;
-            }
+            root = added;
         }
 
         size++;
@@ -66,28 +47,94 @@ public class BinarySearchTree<T extends Comparable> implements BinaryTree<T> {
         return added;
     }
 
+    private LinkedNode<T> add(LinkedNode node, T value) {
+        // a leaf node
+        if (node == null) {
+            return new LinkedNode(value, null, null);
+        }
+
+        LinkedNode added = node;
+        // choose a subtree to insert a value
+        int c = value.compareTo(node.value());
+        if (c < 0) {
+            // go left
+            added = add(node.left, value);
+            // link the added node only its parent, otherwise do nothing
+            node.left = node.left == null? added : node.left;
+        } else if (c > 0) {
+            // go right
+            added = add(node.right, value);
+            // link the added node only its parent, otherwise do nothing
+            node.right = node.right == null? added : node.right;
+        }
+
+        return added;
+    }
+
     @Override
     public boolean remove(T value) {
-        return false;
+        if (find(value) == null) {
+            return false;
+        }
+
+        root = remove(root, value);
+        size--;
+
+        return true;
+    }
+
+    private LinkedNode remove(LinkedNode node, T value) {
+        int c = value.compareTo(node.value());
+
+        if (c > 0) {
+            node.right = remove(node.right, value);
+        } else if (c < 0) {
+            node.left = remove(node.left, value);
+        } else {
+            // either right subtree exists or the node is a leaf
+            if (node.left == null) {
+                return node.right;
+            }
+            // only left subtree exists
+            else if (node.right == null) {
+                return node.left;
+            }
+            // has both left and right subtrees
+            else {
+                // find smallest in the right subtree
+                LinkedNode smallest = node.right;
+                while(smallest != null && smallest.left != null) {
+                    smallest = smallest.left;
+                }
+
+                // swap the values
+                node.value = smallest.value();
+
+                node.right = remove(node.right, (T) smallest.value());
+            }
+        }
+
+        return node;
     }
 
     @Override
     public Node<T> find(T value) {
-        LinkedNode found = null;
+        return find(root, value);
+    }
 
-        LinkedNode curr = root;
-        while(curr != null) {
-            if (value.compareTo(curr.value()) < 0) {
-                curr = curr.left;
-            } else if (value.compareTo(curr.value()) > 0){
-                curr = curr.right;
-            } else {
-                found = curr;
-                break;
-            }
+    private LinkedNode<T> find(LinkedNode node, T value) {
+        if (node == null) {
+            return null;
         }
 
-        return found;
+        int c = value.compareTo(node.value());
+        if (c < 0) {
+            return find(node.left, value);
+        } else if (c > 0) {
+            return find(node.right, value);
+        }
+
+        return node;
     }
 
     @Override
@@ -105,8 +152,8 @@ public class BinarySearchTree<T extends Comparable> implements BinaryTree<T> {
 
         if (wrap(parent).right != null) {
             children.add(wrap(parent).right);
-
         }
+
         return children;
     }
 
@@ -131,14 +178,12 @@ public class BinarySearchTree<T extends Comparable> implements BinaryTree<T> {
 
     private static class LinkedNode<T extends Comparable> implements Node<T> {
 
-        private LinkedNode<T> parent;
         private LinkedNode<T> left;
         private LinkedNode<T> right;
         private T value;
 
-        LinkedNode(T v, LinkedNode p, LinkedNode l, LinkedNode r) {
+        LinkedNode(T v, LinkedNode l, LinkedNode r) {
             value = v;
-            parent = p;
             left = l;
             right = r;
         }
