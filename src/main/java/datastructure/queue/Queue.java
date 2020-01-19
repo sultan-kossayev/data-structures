@@ -4,6 +4,8 @@ import datastructure.DataStructure;
 
 /**
  * Interface of the queue data structure
+ *
+ * todo: make the queue iterable
  * @param <T>
  */
 public interface Queue<T> extends DataStructure {

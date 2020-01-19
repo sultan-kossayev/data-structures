@@ -2,8 +2,6 @@ package datastructure.linkedlist;
 
 /**
  * The implementation of the singly linked list
- *
- * todo: ll should extend {@code IterableStructure}
  */
 public class SinglyLinkedList<T> implements LinkedList<T> {
 

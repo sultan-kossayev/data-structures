@@ -4,6 +4,8 @@ import datastructure.DataStructure;
 
 /**
  * Interface of linked list data structure
+ *
+ * todo: make the linked list iterable
  */
 public interface LinkedList<T> extends DataStructure {
 

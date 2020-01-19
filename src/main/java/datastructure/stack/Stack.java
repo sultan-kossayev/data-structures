@@ -5,7 +5,7 @@ import datastructure.DataStructure;
 /**
  * Interface of the stack data structure
  *
- * todo: stack should extend {@code IterableStructure}
+ * todo: make the stack iterable
  *
  * @param <T> element the stack holds
  */
